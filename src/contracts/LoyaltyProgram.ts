@@ -1,70 +1,88 @@
-// smart-contracts/LoyaltyProgram.ts - To be compiled to FunC/Fift
-import { Cell, Contract, contractAddress, beginCell, Address } from "ton";
+// EventContract.ts - Will be compiled to FunC
+import { Contract, Address, toNano } from "ton";
 
-export default class LoyaltyProgram implements Contract {
-  // Business address => user address => points mapping
-  private pointsMap: Map<string, Map<string, number>>;
+export class EventContract implements Contract {
+  // Event properties
+  eventId: string;
+  organizer: Address;
+  maxTickets: number;
+  ticketsSold: number;
+  eventDate: number;
+  address: Address; // Added required Contract interface property
+  transferRestrictions: {
+    maxPrice: string; // In TON
+    cutoffTime: number; // Timestamp after which transfers are blocked
+    transferFee: string; // % fee to organizer
+  };
 
-  constructor() {
-    this.pointsMap = new Map();
-  }
+  // Ticket types
+  ticketTypes: {
+    id: string;
+    name: string;
+    price: string;
+    available: number;
+    sold: number;
+  }[];
 
-  // Award points to a user for a purchase
-  async awardPoints(
-    businessAddress: Address,
-    userAddress: Address,
-    amount: number,
+  constructor(
+    eventId: string,
+    organizer: Address,
+    maxTickets: number,
+    eventDate: number,
+    address: Address, // Added address parameter
   ) {
-    const businessKey = businessAddress.toString();
-    const userKey = userAddress.toString();
-
-    if (!this.pointsMap.has(businessKey)) {
-      this.pointsMap.set(businessKey, new Map());
-    }
-
-    const userPoints = this.pointsMap.get(businessKey);
-    const currentPoints = userPoints.get(userKey) || 0;
-    userPoints.set(userKey, currentPoints + amount);
-
-    return true;
+    this.eventId = eventId;
+    this.organizer = organizer;
+    this.maxTickets = maxTickets;
+    this.ticketsSold = 0;
+    this.eventDate = eventDate;
+    this.address = address; // Initialize address
+    this.transferRestrictions = {
+      maxPrice: "0", // 0 means no cap
+      cutoffTime: 0, // 0 means no cutoff
+      transferFee: "0", // 0 means no fee
+    };
+    this.ticketTypes = [];
   }
 
-  // Get user points for a specific business
-  async getPoints(
-    businessAddress: Address,
-    userAddress: Address,
-  ): Promise<number> {
-    const businessKey = businessAddress.toString();
-    const userKey = userAddress.toString();
-
-    if (!this.pointsMap.has(businessKey)) {
-      return 0;
-    }
-
-    return this.pointsMap.get(businessKey).get(userKey) || 0;
+  // Methods for organizer to configure event
+  setTransferRestrictions(
+    maxPrice: string,
+    cutoffTime: number,
+    transferFee: string,
+  ) {
+    // Only organizer can call this
+    this.transferRestrictions = { maxPrice, cutoffTime, transferFee };
   }
 
-  // Redeem points (called by business)
-  async redeemPoints(
-    businessAddress: Address,
-    userAddress: Address,
-    points: number,
-  ): Promise<boolean> {
-    const businessKey = businessAddress.toString();
-    const userKey = userAddress.toString();
+  addTicketType(id: string, name: string, price: string, available: number) {
+    this.ticketTypes.push({ id, name, price, available, sold: 0 });
+  }
 
-    if (!this.pointsMap.has(businessKey)) {
-      return false;
+  // Methods for ticket purchases
+  purchaseTicket(ticketTypeId: string, _buyer: Address) {
+    // Prefix unused param with _
+    // Check if tickets are available
+    const ticketType = this.ticketTypes.find((t) => t.id === ticketTypeId);
+    if (!ticketType || ticketType.sold >= ticketType.available) {
+      throw new Error("Tickets not available");
     }
 
-    const userPoints = this.pointsMap.get(businessKey);
-    const currentPoints = userPoints.get(userKey) || 0;
+    // Check if payment is sufficient
+    // In real implementation, verify message value equals ticket price
 
-    if (currentPoints < points) {
-      return false;
-    }
+    // Issue NFT ticket to buyer
+    // This would deploy a new TicketNFT contract
 
-    userPoints.set(userKey, currentPoints - points);
-    return true;
+    // Update stats
+    ticketType.sold += 1;
+    this.ticketsSold += 1;
+  }
+
+  // Validation method
+  validateTicket(_ticketId: string) {
+    // Prefix unused param with _
+    // Check if ticket exists and hasn't been used
+    // Return validation status
   }
 }

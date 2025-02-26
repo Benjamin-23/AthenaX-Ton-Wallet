@@ -1,8 +1,8 @@
 "use client";
 import ConnectButton from "@/components/ConnectButton";
-import MapView from "@/components/MapView";
+import EventGrid from "@/components/EventGrid";
+import TicketPurchase from "@/components/TicketPurchase";
 import WalletConnect from "@/components/WalletConnect";
-import WalletDetails from "@/components/WalletDetails";
 import { useTonAddress, useTonConnectModal } from "@tonconnect/ui-react";
 import dynamic from "next/dynamic";
 import { Dir } from "node:fs";
@@ -33,21 +33,15 @@ export default function Home() {
     getBalance();
   }, [rawAddress]);
 
-  const DynamicMap = dynamic(() => import("@/components/MapView"), {
-    ssr: false,
-    loading: () => (
-      <div style={{ height: "500px", width: "100%" }}>Loading map...</div>
-    ),
-  });
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="mb-8 text-3xl font-bold">TON Connect Example</h1>
+    <main className="container mx-auto px-4 py-8">
       <ConnectButton />
       {userFriendlyAddress && (
-        <div className="flex gap-4 flex-col">
-          {/* <WalletDetails /> */}
+        <div>
           <WalletConnect />
-          {/* <MapView /> */}
+          <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
+          <EventGrid />
+          <TicketPurchase eventId="1" ticketTypes={[]} />
         </div>
       )}
     </main>
