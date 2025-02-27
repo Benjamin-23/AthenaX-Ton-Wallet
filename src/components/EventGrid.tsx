@@ -57,11 +57,11 @@ export default function EventGrid() {
   }
 
   return (
-    <div className="flex  md:grid-cols-2 lg:grid-cols-3 gap-6 bg-blue-500">
+    <div className="flex  md:grid-cols-2 lg:grid-cols-3 gap-6">
       {events.map((event) => (
         <Card
           key={event.id}
-          className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-red-400"
+          className="overflow-hidden hover:shadow-lg transition-all duration-300"
         >
           <div className="aspect-video relative overflow-hidden">
             <img
