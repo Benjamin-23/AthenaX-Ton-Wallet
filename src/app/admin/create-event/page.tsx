@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 export default function CreateEventPage() {
   const [formData, setFormData] = useState({
@@ -18,9 +17,8 @@ export default function CreateEventPage() {
     ticketTypes: [{ name: "", price: "", available: "", description: "" }],
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -28,9 +26,12 @@ export default function CreateEventPage() {
     });
   };
 
-  const handleTicketTypeChange = (index, field, value) => {
+  const handleTicketTypeChange = (index: any, field: string, value: any) => {
     const updatedTicketTypes = [...formData.ticketTypes];
-    updatedTicketTypes[index][field] = value;
+    updatedTicketTypes[index] = {
+      ...updatedTicketTypes[index],
+      [field]: value,
+    };
     setFormData({
       ...formData,
       ticketTypes: updatedTicketTypes,
@@ -47,7 +48,7 @@ export default function CreateEventPage() {
     });
   };
 
-  const removeTicketType = (index) => {
+  const removeTicketType = (index: any) => {
     const updatedTicketTypes = [...formData.ticketTypes];
     updatedTicketTypes.splice(index, 1);
     setFormData({
@@ -56,7 +57,7 @@ export default function CreateEventPage() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -64,10 +65,7 @@ export default function CreateEventPage() {
       // This would call an API that deploys the event contract on TON
       await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulating API call
 
-      toast({
-        title: "Success",
-        description: "Event created successfully",
-      });
+      toast("Event created successfully");
 
       // Reset form
       setFormData({
@@ -78,19 +76,15 @@ export default function CreateEventPage() {
         image: "",
         ticketTypes: [{ name: "", price: "", available: "", description: "" }],
       });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create event",
-        variant: "destructive",
-      });
+    } catch (error: any) {
+      toast(error.message || "field to submit");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Container className="py-8">
+    <div className="p-8 flex justify-center flex-col">
       <h1 className="text-3xl font-bold mb-8">Create New Event</h1>
 
       <Card>
@@ -232,7 +226,7 @@ export default function CreateEventPage() {
                     <Label>Description</Label>
                     <Textarea
                       value={ticketType.description}
-                      onChange={(e) =>
+                      onChange={(e: any) =>
                         handleTicketTypeChange(
                           index,
                           "description",
@@ -303,6 +297,6 @@ export default function CreateEventPage() {
           </form>
         </CardContent>
       </Card>
-    </Container>
+    </div>
   );
 }

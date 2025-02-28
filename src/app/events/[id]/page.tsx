@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 export default function EventPage(): React.ReactElement {
   const router = useRouter();
   const params = new URLSearchParams(window.location.search);
+  console.log(params);
   const id = params.get("id");
   const [event, setEvent] = useState<Event | null>(null);
   const wallet: any = useTonWallet();
@@ -19,6 +20,7 @@ export default function EventPage(): React.ReactElement {
 
   // Mock event data - would be fetched from API
   useEffect(() => {
+    console.log(id);
     if (id) {
       setEvent({
         id: id as string,
@@ -27,8 +29,8 @@ export default function EventPage(): React.ReactElement {
         venue: "Central Park",
         description:
           "A three-day music festival featuring top artists from around the world. Join us for an unforgettable experience with live performances, food vendors, and activities for all ages.",
-        image: "/api/placeholder/1200/600",
-        lowestPrice: "50",
+        image: "/images/event2.jpg",
+        lowestPrice: 50,
         availableTickets: 1250,
         ticketTypes: [
           {
@@ -123,6 +125,22 @@ export default function EventPage(): React.ReactElement {
   return (
     <div className="py-8">
       <div className="mb-8">
+        <Button className="mb-4" onClick={() => router.push("/")}>
+          <svg
+            className="h-4 w-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          Back to Home
+        </Button>
         <div className="aspect-video relative overflow-hidden rounded-lg mb-4">
           <img
             src={event?.image}

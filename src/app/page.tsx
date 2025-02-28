@@ -23,7 +23,7 @@ export default function HomePage(): React.ReactElement {
         venue: "Central Park",
         description:
           "A three-day music festival featuring top artists from around the world.",
-        image: "public/images/event1.jpg",
+        image: "/images/event1.jpg",
         lowestPrice: 50,
         availableTickets: 1500,
       },
@@ -45,7 +45,7 @@ export default function HomePage(): React.ReactElement {
         venue: "Laugh Factory",
         description:
           "A night of laughter with the best stand-up comedians in town.",
-        image: "/api/placeholder/800/400",
+        image: "/images/event3.jpg",
         lowestPrice: 25,
         availableTickets: 200,
       },
@@ -63,9 +63,9 @@ export default function HomePage(): React.ReactElement {
   };
 
   return (
-    <div className="py-8">
+    <div className="p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">NFT Event Tickets</h1>
+        <h1 className="text-2xl font-bold">NFT Event Tickets</h1>
         <ConnectButton />
       </div>
 

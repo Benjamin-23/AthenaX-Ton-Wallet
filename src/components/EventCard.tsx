@@ -35,7 +35,7 @@ export default function EventCard({ event }: EventCardProps) {
       <CardContent>
         <div className="aspect-video relative overflow-hidden rounded-md mb-4">
           <img
-            src="/event1.jpg"
+            src={event.image}
             alt={event.title}
             className="object-cover w-full h-full"
           />
